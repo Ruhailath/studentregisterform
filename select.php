@@ -1,11 +1,13 @@
 <?php
+header('Content-Type: application/json');
 include 'dbconnection.php';
-$id = $_REQUEST['selected'];
-$u="select * from student where id=$id";
+$id = $_POST['id'];
+$sql ="select * from student_register where student_id=$id";
  
-$r = mysqli_query($conn, $u);
-if ($r->num_rows > 0) {
-    $row = $r->fetch_assoc();
+$result = $conn->query($sql);
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
     echo json_encode($row);
 }
+$conn->close();
 ?>

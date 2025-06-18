@@ -1,8 +1,6 @@
 <?php
    include 'dbconnection.php';
-   
-    // Collect and sanitize form data
-    //if ($_SERVER["REQUEST_METHOD"] == "POST") {
+              $id=$_POST["id"] ?? '';
               $firstname = $_POST["name"] ?? '';
               $lastname = $_POST["lastname"] ?? '';
               $dob = $_POST["dob"] ?? '';
@@ -18,16 +16,29 @@
               $course = $_POST["course"] ?? '';
               $password =$_POST["password"] ?? '';
               $confirmpassword = $_POST["confirmpassword"] ?? '';
-    // Prepare and execute the SQL statement
-$sql = "INSERT INTO student_register (student_firstname,student_lastname, dob, email, phone, gender,address,city,state, country, pin, university, course, pass_wrd,confirm_pass)
-VALUES ('$firstname', '$lastname', '$dob', '$email', '$phone', '$gender', '$address', '$City', '$state', '$country', '$pincode', '$university', '$course', '$password','$confirmpassword')";
 
-if ($conn->query($sql) === TRUE) {
-  echo "New record created successfully";
-} else {
-  echo "Error: " . $sql . "<br>" . $conn->error;
-}
+// Check if the ID is set in the URL
+if ($id== '$row["student_id"]' ) {
+               $id = $_POST['id'];
 
+              $sql = "UPDATE Student_register SET student_firstname='$firstname',student_lastname='$lastname',dob='$dob', email='$email', phone='$phone', gender='$gender',address='$address',city='$City',state='$state', country='$country', pin='$pincode', university='$university', course='$course', pass_wrd='$password',confirm_pass='$confirmpassword' WHERE id=$id";
+
+             if ($conn->query($sql) === TRUE) {
+                echo "Record updated successfully";
+               } else {
+                 echo "Error updating record: " . $conn->error;
+               }
+           }
+              else{
+               $sql = "INSERT INTO student_register (student_firstname,student_lastname, dob, email, phone, gender,address,city,state, country, pin, university, course, pass_wrd,confirm_pass)
+                VALUES ('$firstname', '$lastname', '$dob', '$email', '$phone', '$gender', '$address', '$City', '$state', '$country', '$pincode', '$university', '$course', '$password','$confirmpassword')";
+
+             if ($conn->query($sql) === TRUE) {
+                 echo "New record created successfully";
+             } else {
+                 echo "Error: " . $sql . "<br>" . $conn->error;
+             }
+           }
 $conn->close();
 //}
 ?>
