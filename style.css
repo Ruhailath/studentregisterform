@@ -1,0 +1,35 @@
+.selector-for-some-widget {
+  box-sizing: content-box;
+  pad: 0px;
+  margin: 0px;
+}
+body {
+  background-image: url("background_image.jpg");
+  /*position: relative;*/
+  background-size: cover;
+  max-width: 100%;
+  height: auto;
+    z-index: -1;
+}
+.text-center-custom{
+    font-family: "Times New Roman", Times, serif;
+    font-weight: bold;
+    text-shadow: 2px 2px white;
+}
+input:focus {
+  border-color: red;
+  outline: none; /* optional: removes the blue glow */
+}
+#studentTable,th,td{
+  border: 1px solid rgb(17, 17, 17);
+  padding: 6px;
+  margin: 15px;
+  border-style:solid;
+  text-align: center;
+  width:60%;
+  font-size: 14px;
+  
+}
+th, td {
+  background-color: #96D4D4;
+}
