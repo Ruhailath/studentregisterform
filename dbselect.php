@@ -1,27 +1,5 @@
  <html>
  <link rel="stylesheet" href="style.css" />
-
- <script>
-function deleteRow(button) {
-   var tr = button.closest('tr');
-    var id = tr.getAttribute('data-id');
-    console.log("Deleting row with ID:", id);
-    $.ajax({
-        url: 'dbitemdelete.php',
-        type: 'POST',
-        data: { id: id },
-        success: function(response) {
-             // Refresh the table after deletion
-             alert("Data deleted successfully");
-             Displaydetails(); 
-        },
-        error: function(xhr, status, error) {
-            console.error('Error deleting row:', error);
-        }
-    });
-   
-}
-</script>
 <?php
 include 'dbconnection.php';
 $sql = "SELECT * FROM student_register";
@@ -31,6 +9,7 @@ if ($result->num_rows > 0) {
     echo '<table id="studentTable">';
     echo "<thead>";
     echo  "<tr>";
+    echo  "<th>ID</th>";
     echo  "<th>First Name</th>";
     echo  "<th>Last Name</th>";
     echo  "<th>Date of Birth</th>";
@@ -50,7 +29,8 @@ if ($result->num_rows > 0) {
     echo "</thead>";
     echo "<tbody>";
     while($row = $result->fetch_assoc()) {
-        echo "<tr data-id='{$row['student_id']}'>";
+        echo "<tr id='tr'>";
+        echo "<td>" . $row["student_id"] . "</td>";
         echo "<td>" . $row["student_firstname"] . "</td>";
         echo "<td>" . $row["student_lastname"] . "</td>";
         echo "<td>" . $row["dob"] . "</td>";
@@ -66,8 +46,8 @@ if ($result->num_rows > 0) {
         echo "<td>" . $row["course"] . "</td>";
         echo "<td>" . $row["pass_wrd"] . "</td>";
         echo "<td>" . $row["confirm_pass"] . "</td>";
-        echo "<td><button class='delete-button' onclick='deleteRow(this)' id='" . $row['student_id'] . "'>Delete</button></td>";
-        echo "<td><button class='update-button' onclick='updateRow(this)'>Update</button></td>";
+        echo "<td><button class='delete-button' onclick='deleteRow({$row["student_id"]})' name='buttondel' id='buttondel'>Delete</button></td>";
+        echo "<td><button class='update-button' onclick='updateRow({$row["student_id"]})'>Update</button></td>";
         echo "</tr>";
     }
     echo "</tbody>";

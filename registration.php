@@ -127,11 +127,6 @@
       return true;
     }
  
-       //function dbinsert(){
-        // var xhttp = new XMLHttpRequest();
-        // xhttp.open("POST", "dbinsert.php", true);
-        // xhttp.send();
-       //}
        function dbinsert(){
        if(!formsubmission()){
             return ;
@@ -143,6 +138,7 @@
                datatype: 'html',
                data:$('#studentform').serialize(),
             success: function(data) {
+              //console.log(data); 
               alert("Data inserted successfully"); 
               }});
 
@@ -167,6 +163,54 @@
            // Displaydetails();
            // });
      }
+     function deleteRow(student_id) {
+
+         $.ajax({
+            url: 'dbitemdelete.php',
+            type: 'POST',
+            data: { id: student_id  },
+            success: function(response) {
+               // Refresh the table after deletion
+               alert("Data deleted successfully");
+               Displaydetails(); 
+            },
+            error: function(xhr, status, error) {
+            console.error('Error deleting row:', error);
+        }
+    });
+   }
+  function updateRow(student_id) {
+        // Fetch the row data using AJAX      
+           console.log(student_id); 
+           
+        $.ajax({
+            url: 'select.php',
+            type: 'POST',
+            dataType: 'json',
+            data: { id: student_id },
+            success: function(data) {
+              document.getElementById("id").value =data[student_id];
+              document.getElementById("firstname")= data[student_firstname];
+              document.getElementById("lastname").value = data[student_lastname];
+              document.getElementById("dob").value = data[dob];
+              document.getElementById("email").value = data[email];
+              document.getElementById("phone").value = data[phone];
+            if(data.gender) {
+                document.querySelector('input[name="gender"][value="' + data[gender] + '"]').checked = true;
+            }
+            document.getElementById("address").value = data[address];
+            document.getElementById("City").value = data[city];
+            document.getElementById("pincode").value = data[pin];
+            document.getElementById("state").value = data[state];
+            document.getElementById("country").value = data[country];
+            document.getElementById("university").value = data[university];
+            document.getElementById("course").value = data[course];
+            document.getElementById("password").value = data[pass_wrd];
+            document.getElementById("confirmpassword").value = data[confirm_pass];
+
+        }
+     });
+   }
     </script>
       
     
@@ -186,11 +230,7 @@
         <section>
           <h1 class="text-center text-center-custom">STUDENT REGISTRATION FORM</h1>
           <form  action="" method="post"  id="studentform" class="row g-3" novalidate>
-           <input
-                type="hidden"
-                name="name"
-                id="id"
-              /> 
+           <input type="hidden" name="id" id="id"/>
            <div class="col-md-6">
               <label for="firstname"  class="form-label">First Name:</label>
               <input

@@ -1,5 +1,6 @@
 <?php
    include 'dbconnection.php';
+   
     // Collect and sanitize form data
     //if ($_SERVER["REQUEST_METHOD"] == "POST") {
               $firstname = $_POST["name"] ?? '';
