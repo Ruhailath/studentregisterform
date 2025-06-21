@@ -195,7 +195,7 @@
     dataType: 'json',
     data: { id: student_id },
     success: function(data) {
-        console.log(data);
+        //console.log(data);
         document.getElementById("id").value = data['student_id'];
         document.getElementById("name").value = data['student_firstname'];
         document.getElementById("lastname").value = data['student_lastname'];
@@ -231,10 +231,28 @@
         }
     });
 }
-function fillfeeamount()
-{
+function calculatefee(){
     var grandTotal = 0;
     var totalBalance = 0;
+    var balance=0;
+    const rowcount= document.getElementById("rowcount").value;
+    for(var i=0;i<rowcount;i++)
+    {
+        var amount = parseFloat(document.getElementById("feeamount" + i).textContent) || 0;
+        var total = document.getElementById("total"+i).value;
+        total = parseFloat(total) || 0; // Ensure total is a number
+        balance= amount - total;
+        document.getElementById("total" + i).value = total;
+        document.getElementById("balance" + i).value = balance;
+        grandTotal += total;
+        totalBalance += balance;
+    }
+    document.getElementById("gtotal").value = grandTotal;
+    document.getElementById("gbalance").value = totalBalance;
+}
+function fillfeeamount()
+{
+   
    //var total=0;
   var payment = document.getElementById("payment").value;
   const rowcount= document.getElementById("rowcount").value;
@@ -265,15 +283,20 @@ function fillfeeamount()
         document.getElementById("balance" + i).value = balance;
     }
 
-      grandTotal += total;
-      totalBalance += balance;
+      //grandTotal += total;
+      //totalBalance += balance;
    }
-    document.getElementById("gtotal").value = grandTotal;
-    document.getElementById("gbalance").value = totalBalance;
+    //document.getElementById("gtotal").value = grandTotal;
+    //document.getElementById("gbalance").value = totalBalance;
 }
-function insertfees(){
+function insertfees(student_id){
+    //console.log(student_id);
+    let sid = document.getElementById("sid").value;
+    if (!sid) {
+        sid = student_id;
+    }
     const dop = document.getElementById("dop").value;
-    const sid = document.getElementById("sid").value;
+    //const sid = document.getElementById("sid").value;
     const grandtotal=document.getElementById("gtotal").value;
     const grandbalance=document.getElementById("gbalance").value;
     const rowcount= document.getElementById("rowcount").value;
@@ -304,10 +327,51 @@ function insertfees(){
             console.error('Error inserting fee details:', error);
         }
     });
-
-  
 }
-    </script>
+function getreceipt() {
+   $.ajax({
+             url: 'receiptdisplay.php',
+             type: 'POST',
+             dataType: 'html',
+            success: function(data) {
+            // Insert only the table rows into the tbody
+            $('#feedetailsbody').html(data);
+          }
+         });
+}
+function deletefeeRow(header_id) {
+        //console.log(header_id);
+         $.ajax({
+            url: 'deletereceiptdetails.php',
+            type: 'POST',
+            data: { id: header_id  },
+            success: function(response) {
+               // Refresh the table after deletion
+               alert("Data deleted successfully");
+               getreceipt();
+            },
+            error: function(xhr, status, error) {
+            console.error('Error deleting row:', error);
+        }
+    });
+   }
+
+function updatefeeRow(header_id) {
+        //Fetch the row data using AJAX      
+           //console.log(header_id);    
+    $.ajax({
+    url: 'selectforupdatefeedetails.php',
+    type: 'POST',
+    dataType: 'html',
+    data: { id: header_id },
+    success: function(data) {
+        console.log(data);
+        $('#feedtailsupdate').html(data);
+    }
+    });
+     
+   }   
+</script>
       
     
     
@@ -525,8 +589,9 @@ function insertfees(){
             </div>
             <div class="col-12">
               <button type="button" onclick="dbinsert()" name="register" class="btn btn-primary" id="register">Register</button>
-              <button type="button" onclick="cleardetails()"  class="btn btn-secondary" name="clear"  id="clear" >Clear</button>
+              <button type="button" onclick="cleardetails()" class="btn btn-secondary" name="clear"  id="clear" >Clear</button>
                <button type="button" class="btn btn-danger" onclick="Displaydetails()" name="display"  id="display" >DISPLAY DETAILS</button>
+               <button type="button" class="btn btn-danger" onclick="getreceipt()" name="treceipt"  id="receipt" >DISPLAY FEE DETAILS</button>
              </div>
           </form>
         </section> 
@@ -546,13 +611,16 @@ function insertfees(){
                     <div class="col-md-2">
                     <button type="button" class="btn btn-primary" onclick="feedetails(document.getElementById('sid').value)" name="getfee" id="getfee">Get Fee Details</button>
                     </div>  
+                    <table id="studentTable">
+                    <table id="feedetailsbody">
+                    <table id="feedtailsupdate"> 
                     <table id="studentfeetable" border="none" >
                     <table border="1" id="feetable">
            </div> 
         </section> 
       </main>
     </div>
-      <table id="studentTable">
+     
         
       <script src="/bootstrap.bundle.min.js"></script>
   </body>
