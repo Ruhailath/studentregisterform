@@ -66,7 +66,7 @@ if ($result->num_rows > 0) {
      echo '<td style="display: none;" id="feeid' . $i . '">' . $row1["fee_id"] . '</td>';
      echo  '<td id="feename' . $i . '">' . $row1["fee_name"] . "</td>";
      echo  '<td id="feeamount' . $i . '">'. $row1["Amout"] . "</td>";
-     echo  '<td ><input type="text" id="total' . $i . '" name="total"  placeholder="0" /></td>';
+     echo  '<td ><input type="text" id="total' . $i . '" name="total" onfocus="calculatefee()" oninput="calculatefee()"  placeholder="0" /></td>';
      echo  '<td ><input type="text" id="balance' . $i . '" name="balance"  placeholder="0" readonly/></td>'; 
      echo  '</tr>';
         $i++;
@@ -77,7 +77,7 @@ if ($result->num_rows > 0) {
      echo '<td><input type="text" id="gtotal" name="gtotal"  placeholder="0"/></td>';
      echo '<td><input type="text" id="gbalance" name="gbalance"  placeholder="0"  readonly/></td>'; 
      echo '</tr>';
-     echo '<td><tr><button type="button" class="btn btn-primary" onclick="insertfees()" id="Payfee" name="payfee">Pay Fee</button></tr></td>';
+     echo '<tr><td><button type="button" class="btn btn-primary" onclick="insertfees('.$id.')" id="Payfee" name="payfee">Pay Fee</button></td></tr>';
      echo '</table>';
     
 }
