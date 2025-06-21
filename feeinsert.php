@@ -14,7 +14,8 @@
               $row = $result->fetch_assoc();
               $serialno = ($row['max_id'] ?? 0) + 1;
 
-              // Extract year from receipt date
+              // Extract year from receipt date chech if receipt date is not empty
+              // If receipt date is empty, set year to empty string
               $year = '';
               if (!empty($receiptdate)) {
                  $year = date('Y', strtotime($receiptdate));
