@@ -30,6 +30,11 @@ input:focus {
   font-size: 14px;
   
 }
-th, td {
+/*th, td {
   background-color: #96D4D4;
+}*/
+#studentfeetable, #studentfeetable th, #studentfeetable td {
+    border: none;
+    background: none;
+    box-shadow: none;
 }

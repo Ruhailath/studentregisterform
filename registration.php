@@ -11,6 +11,7 @@
       const firstname=document.getElementById("name").value;
       const lastname=document.getElementById("lastname").value;
       const dob=document.getElementById("dob").value;
+      const cid=document.getElementById("courseid").value;
       const email=document.getElementById("email").value;
       const phone=document.getElementById("phone").value;
       const gender=document.querySelector('input[name="gender"]:checked');
@@ -43,6 +44,11 @@
       if(dob.trim()=== ""){
         alert("dob should not be empty!");
         document.getElementById("dob").focus();
+        return false;
+      }
+       if(cid.trim()===''){
+        alert("course-id should not be empty!");
+        document.getElementById("course").focus();
         return false;
       }
       if(email.trim()===''){
@@ -146,6 +152,7 @@
 
          function cleardetails() {
             document.getElementById("studentform").reset();
+            document.getElementById("id").value = ""; // or null
             document.getElementById("name").focus();
          }
          function Displaydetails(){
@@ -180,7 +187,7 @@
     });
    }
   function updateRow(student_id) {
-        // Fetch the row data using AJAX      
+        //Fetch the row data using AJAX      
            //console.log(student_id);    
     $.ajax({
     url: 'select.php',
@@ -193,6 +200,7 @@
         document.getElementById("name").value = data['student_firstname'];
         document.getElementById("lastname").value = data['student_lastname'];
         document.getElementById("dob").value = data['dob'];
+        document.getElementById("courseid").value =data['course_id'];
         document.getElementById("email").value = data['email'];
         document.getElementById("phone").value = data['phone'];
         if(data['gender']) {
@@ -208,8 +216,97 @@
         document.getElementById("password").value = data['pass_wrd'];
         document.getElementById("confirmpassword").value = data['confirm_pass'];
     }
-});
+    });
    }
+  function feedetails(sid) {
+    //console.log(sid); 
+    $.ajax({
+        url: 'displayfeedetails.php',
+        type: 'POST',
+        dataType: 'html',
+        data: { sid: sid },
+        success: function(data) {
+            //console.log(data);
+                $('#studentfeetable').html(data);
+        }
+    });
+}
+function fillfeeamount()
+{
+    var grandTotal = 0;
+    var totalBalance = 0;
+   //var total=0;
+  var payment = document.getElementById("payment").value;
+  const rowcount= document.getElementById("rowcount").value;
+  //console.log("Row count: " + rowcount);
+  for(var i=0;i<rowcount;i++)
+  {
+    var amount = parseFloat(document.getElementById("feeamount" + i).textContent) || 0;
+     var total = 0;
+    var balance = 0;
+  if (payment > amount) {
+        total = amount;
+        balance = 0;
+        document.getElementById("total" + i).value = total;
+        document.getElementById("balance" + i).value = balance;
+        payment = payment - amount;
+    }
+    else if (payment <= amount && payment > 0) {
+        total = payment;
+        balance = amount - total;
+        document.getElementById("total" + i).value = total;
+        document.getElementById("balance" + i).value = balance;
+        payment = 0;
+    } 
+    else if (payment <= 0) {
+        total = 0;
+        balance = amount;
+        document.getElementById("total" + i).value = total;
+        document.getElementById("balance" + i).value = balance;
+    }
+
+      grandTotal += total;
+      totalBalance += balance;
+   }
+    document.getElementById("gtotal").value = grandTotal;
+    document.getElementById("gbalance").value = totalBalance;
+}
+function insertfees(){
+    const dop = document.getElementById("dop").value;
+    const sid = document.getElementById("sid").value;
+    const grandtotal=document.getElementById("gtotal").value;
+    const grandbalance=document.getElementById("gbalance").value;
+    const rowcount= document.getElementById("rowcount").value;
+    // Declare the arrays before using them!
+    var feeids = [];
+    var balances = [];
+    var totals=[];
+
+    
+    for (var i = 0; i < rowcount; i++) {
+        feeids.push(document.getElementById("feeid" + i).textContent || document.getElementById("feeid" + i).value);
+        balances.push(document.getElementById("balance" + i).value);
+        totals.push(document.getElementById("total" + i).value);
+    }
+
+    //console.log(amount, dop, sid, grandtotal, grandbalance);
+    $.ajax({
+        url: 'feeinsert.php',
+        type: 'POST',
+        data: { dop: dop, sid: sid , grandtotal: grandtotal,randbalance: grandbalance , rowcount: rowcount,feeid: feeids,balance: balances,total:totals},
+        success: function(response) {
+           //console.log('Data to be sent:', { dop: dop, sid: sid, grandtotal: grandtotal, grandbalance: grandbalance , rowcount: rowcount,feeid: feeids,
+           // balance: balances, });
+            alert("Fee details inserted successfully");
+            //feedetails(sid);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error inserting fee details:', error);
+        }
+    });
+
+  
+}
     </script>
       
     
@@ -253,7 +350,7 @@
                 required
               />
             </div>
-             <div class="col-12">
+             <div class="col-6">
               <label for="dob" class="form-label">Date of Birth:</label>
               <input
                 type="date"
@@ -262,6 +359,17 @@
                 id="dob"
                 required
               />
+            </div>
+            <div class="col-md-6">
+              <label for="courseid" class="form-label">Course-ID</label>
+              <select class="form-select" aria-label="Default select example" name="courseid" id="courseid" required  >
+                <option value="">Select course-id</option>
+                <option value="1">BSC Computer science-1</option>
+                <option value="2">BCA-2</option>
+                <option value="3">MCA-3</option>
+                <option value="4">BTEC-4</option>
+                <option value="5">MTEC-5</option>
+              </select>
             </div>
             <div class="col-md-6">
               <label for="email" class="form-label">Email:</label>
@@ -382,8 +490,8 @@
             </div>
           <div class="col-md-6">
               <label for="course" class="form-label">Course</label>
-              <select class="form-select" aria-label="Default select example" name="course" id="course"  >
-                <option selected>Select course</option>
+              <select class="form-select" aria-label="Default select example" name="course" id="course"  required>
+                <option value="" selected>Select course</option>
                 <option value="bsc">BSC Computer science</option>
                 <option value="bca">BCA</option>
                 <option value="mca">MCA</option>
@@ -421,12 +529,31 @@
                <button type="button" class="btn btn-danger" onclick="Displaydetails()" name="display"  id="display" >DISPLAY DETAILS</button>
              </div>
           </form>
-         
-        </section>   
+        </section> 
+        <section>
+          <div>
+            <h3>Course Fee Portal:</h3>
+                   <div class="col-md-2">
+                   <label for="confirmpassword" class="form-label">Enter student_id:</label>
+                   <input
+                       type="text"
+                       class="form-control form-control-lg"
+                       name="sid"
+                       id="sid"
+                       required
+                    />
+                    </div>
+                    <div class="col-md-2">
+                    <button type="button" class="btn btn-primary" onclick="feedetails(document.getElementById('sid').value)" name="getfee" id="getfee">Get Fee Details</button>
+                    </div>  
+                    <table id="studentfeetable" border="none" >
+                    <table border="1" id="feetable">
+           </div> 
+        </section> 
       </main>
     </div>
-   
-     <script src="/bootstrap.bundle.min.js"></script>
       <table id="studentTable">
+        
+      <script src="/bootstrap.bundle.min.js"></script>
   </body>
 </html>

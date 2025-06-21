@@ -13,6 +13,7 @@ if ($result->num_rows > 0) {
     echo  "<th>First Name</th>";
     echo  "<th>Last Name</th>";
     echo  "<th>Date of Birth</th>";
+    echo  "<th>Course ID</th>";
     echo  "<th>Email</th>";
     echo  "<th>Phone</th>";
     echo  "<th>Gender</th>";
@@ -25,6 +26,8 @@ if ($result->num_rows > 0) {
     echo  "<th>Course</th>";
     echo  "<th>Password</th>";
     echo  "<th>Confirm Password</th>";
+    echo  "<th>Delete</th>";
+    echo  "<th>Update</th>";
     echo  "</tr>";
     echo "</thead>";
     echo "<tbody>";
@@ -34,6 +37,7 @@ if ($result->num_rows > 0) {
         echo "<td>" . $row["student_firstname"] . "</td>";
         echo "<td>" . $row["student_lastname"] . "</td>";
         echo "<td>" . $row["dob"] . "</td>";
+        echo "<td>" . $row["course_id"] . "</td>";
         echo "<td>" . $row["email"] . "</td>";
         echo "<td>" . $row["phone"] . "</td>";
         echo "<td>" . $row["gender"] . "</td>";
